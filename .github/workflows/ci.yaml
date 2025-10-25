@@ -20,7 +20,6 @@ env:
   PACKAGE_VERSION: 0.0.2
   package_name: CLib
   build_dir: null  # Disables package generation (code only repo).
-  test_make_target: test
   CCACHE_SECONDARY_STORAGE: ${{ secrets.CCACHE_SECONDARY_STORAGE }}
 
 jobs:
@@ -35,11 +34,11 @@ jobs:
       image: ghcr.io/boschglobal/dse-gcc-builder:main
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Build package metadata
         id: package_meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: dse/clib
           tags: |
@@ -59,8 +58,19 @@ jobs:
           make
 
       - name: Test
-        if: ${{ env.test_make_target != '' }}
+        if: ${{ matrix.package_arch == 'linux-amd64' }}
         env:
           PACKAGE_ARCH: ${{ matrix.package_arch }}
         run: |
-          make ${{ env.test_make_target }}
+          make test_cmocka
+
+  test_go:
+    runs-on: [ubuntu-latest]
+    needs: []
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Test
+        run: |
+          make test_go

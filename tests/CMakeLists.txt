@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 cmake_minimum_required(VERSION 3.21)
+cmake_policy(SET CMP0135 NEW)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -66,5 +67,6 @@ add_subdirectory(collections)
 add_subdirectory(data)
 add_subdirectory(functional)
 add_subdirectory(mdf)
+add_subdirectory(ini)
 add_subdirectory(schedule)
 add_subdirectory(util)

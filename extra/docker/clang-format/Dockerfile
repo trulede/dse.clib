@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 LABEL maintainer="timothy.rule@de.bosch.com"
 
 # Usage Notes
@@ -19,12 +19,13 @@ LABEL maintainer="timothy.rule@de.bosch.com"
 #       Formatting common/yaml.c
 #
 # For permanent activation of these commands, add the ´export´ and ´alias´
-# commands to files ´~/.profile´ and  ´~/.bash_alias´ respectivly.
+# commands to files ´~/.profile´ and  ´~/.bash_alias´ respectively.
 
 
 # Setup basic environment
 # =======================
-RUN apt-get -y update; \
+RUN set -eux; \
+    apt-get -y update; \
     apt-get -y upgrade; \
     apt-get -y install --no-install-recommends \
         ca-certificates \
@@ -33,22 +34,18 @@ RUN apt-get -y update; \
         gnupg \
         less \
         software-properties-common \
-    && \
+        wget \
+    ; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*
 
 
 # Setup CLang Format
 # ==================
-RUN curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - ; \
-    add-apt-repository "deb http://apt.llvm.org/bullseye/ llvm-toolchain-bullseye-13 main"; \
-    apt-get -y update; \
-    apt-get -y install --no-install-recommends \
-        clang-format-13 \
-    && \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/*; \
-    ln -s /usr/bin/clang-format-13 /usr/bin/clang-format
+RUN set -eux; \
+    wget https://apt.llvm.org/llvm.sh; \
+    chmod +x llvm.sh; \
+    ./llvm.sh 20
 
 COPY clang-format /usr/local/etc/clang-format
 COPY format.sh /usr/local/bin/format.sh

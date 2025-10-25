@@ -16,13 +16,12 @@ jobs:
     name: Lint Code Base
     runs-on: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
       - name: Super-Linter
-        uses: github/super-linter/slim@v6
+        uses: super-linter/super-linter/slim@v8
         env:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
@@ -30,5 +29,6 @@ jobs:
           FILTER_REGEX_EXCLUDE: (dse/clib/fmi/fmi2/headers/.*|dse/clib/fmi/fmi3/headers/.*|dse/clib/data/xxhash.h)
           VALIDATE_CPP: true
           VALIDATE_DOCKERFILE: true
+          # VALIDATE_GO: true
           VALIDATE_MARKDOWN: true
           VALIDATE_YAML: true
